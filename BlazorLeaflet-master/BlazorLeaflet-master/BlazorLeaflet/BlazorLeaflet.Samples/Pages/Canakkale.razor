@@ -1,0 +1,110 @@
+﻿@page "/"
+@inject NavigationManager UriHelper
+
+<div class="col-lg-12 control-section card-control-section">
+    <div class="row card-layout">
+        <div>
+            <SfCard Orientation="CardOrientation.Horizontal" ID="Canakkale">
+                <CardImage Image="https://i4.hurimg.com/i/hurriyet/75/1110x740/5ed75eab18c7730ec03bf9dd.jpg"></CardImage>
+                <CardStacked>
+                    <CardHeader Title="ÇANAKKALE HAKKINDA"></CardHeader>
+                    <CardContent Content="Çanakkale, Anadolu topraklarının kuzeybatısında yer alan, hareketli ve köklü tarihiyle dikkat çeken bir kenttir. Asya ve
+                        Avrupa kıtalarının topraklarında kurulmuş olan şehir, tarih boyunca birçok uygarlığın yerleşim yeri olmuştur. Şehrin toprakları
+                        Osmanlı İmparatorluğu ile İtilaf Devletleri arasında gerçekleşen ve Türk tarihinde büyük bir öneme sahip olan Çanakkale Savaşı'na sahne olmuştur.
+                        1915-1916 yılları arasında, Gelibolu Yarımadası'nda deniz ve karada yapılan büyük mücadeleler sonucunda İtilaf Devletleri Türk kuvveti karşısında
+                        yenik düşmüş ve bu zafer Türk tarihinde önemli bir yer edinmiştir."></CardContent>
+                </CardStacked>
+            </SfCard>
+        </div>
+        <div>
+            <SfCard Orientation="CardOrientation.Horizontal" ID="Trimmer">
+                <CardStacked>
+                    <CardHeader Title="GEZİLECEK YERLER" />
+                    <CardContent Content="Çanakkale yerleşimi çok geniş bir alana yayılmış durumda değildir. Bu yüzden çok büyük bir şehir
+                                 olmayan Çanakkale'yi gezmek, belli başlı yerleri görmek birkaç gün içinde gerçekleştirilebilecek bir plandır.
+                                 Şehir Türk ve dünya tarihi bakımından bir çok toplumda iz bıraktığından insanların ilgisini çekmeye devam etmektedir.
+                                 Örneğin Troya Antik Kenti, hikayesi ile insanlık tarihine dair önemli noktalara dikkat çekmektedir.Kazdağları Milli Parkı
+                                 barındırdığı doğal yaşamı ile,dünya üzerinde canlı yaşamına dair önemli noktalardan biri olma özelliği taşımaktadır." />
+                </CardStacked>
+                <img src="https://cdn2.neredekal.com/hotel/2/fS7/520x293/WzUq.jpg">
+            </SfCard>
+            <SfCard Orientation="CardOrientation.Horizontal" ID="Camera">
+                <img src="https://gezimanya.com/sites/default/files/styles/800x600_/public/lokasyon-detay/2019-11/image-a21d916e92b9b62e53102774088ac1b82536edea.jpg">
+                <CardStacked>
+                    <CardHeader Title="NEREDE KALINIR?" />
+                    <CardContent Content="Çanakkale, eşsiz doğal varlıkları ve tarihindeki kültür birikimiyle çok katmanlı yapıya sahip olan bir şehirdir.
+                                 Savaşların yoğun yaşandığı Çanakkale toprakları,geçmişin izini sürmek için gezip görülebilecek bir şehirdir. Bu açıdan Çanakkale,
+                                 yerli ve yabancı turistlerin ilgi odağı olmaya hak kazanmıştır.Şehirde konaklanacak yerler, diğer bir çok şehirde
+                                 sıkça rastlananın aksine belli bir bölgede toplanmamıştır. Bu açıdan bir çok bölge, dikkat çeken farklı özellikleriyle
+                                 konaklamak üzere tercih edilebilir." />
+                    <CardFooter>
+                        <CardFooterContent>
+                            <SfButton CssClass="e-btn e-outline e-primary" @onclick="otel">OTELLER</SfButton>
+                        </CardFooterContent>
+                    </CardFooter>
+                </CardStacked>
+            </SfCard>
+        </div>
+    </div>
+</div>
+@code {
+
+
+    private void otel()
+    {
+        UriHelper.NavigateTo("counter");
+    }
+}
+
+<style>
+
+
+
+    #Canakkale .e-card-stacked {
+        justify-content: flex-start;
+        margin: 16px;
+    }
+
+    .e-card .e-card-header .e-card-header-caption .e-card-header-title {
+        font-size: 14px;
+        font-family: Helvetica, 'Segoe UI';
+        font-weight: bold;
+    }
+
+    #Trimmer {
+        height: 300px;
+        margin-left: 30%;
+    }
+
+    #Camera .e-card-content {
+        padding-top: 0px;
+    }
+
+    #Trimmer .e-card-content {
+        padding-top: 0px;
+    }
+
+    #Camera {
+        height: 300px;
+    }
+
+    .card-layout {
+        max-width: 850px;
+        margin: auto;
+    }
+
+    .e-card.e-card-horizontal img {
+        margin: 0px;
+        width: 50%
+    }
+
+    .e-card {
+        margin: 7px;
+    }
+
+    .card-control-section .e-card.e-card-horizontal.e-product .e-card-stacked > :first-child,
+    .card-control-section .e-card.e-card-horizontal .e-card-stacked > :first-child,
+    .card-control-section .e-card.e-card-horizontal .e-card-stacked > :first-child {
+        flex-grow: 0;
+    }
+</style>

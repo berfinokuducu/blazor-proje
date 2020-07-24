@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Syncfusion.Blazor;
+using Microsoft.EntityFrameworkCore;
 namespace BlazorLeaflet.Samples
 {
     public class Startup
@@ -24,6 +25,11 @@ namespace BlazorLeaflet.Samples
             services.AddServerSideBlazor().AddCircuitOptions(o => { o.DetailedErrors = true; });
             services.AddScoped<CityService>();
             services.AddSyncfusionBlazor();
+            services.AddDbContext<HotelDbContext>(options =>
+            {
+                options.UseSqlite("Data Source = Hotel.db");
+            });
+            services.AddScoped<HotelServices>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

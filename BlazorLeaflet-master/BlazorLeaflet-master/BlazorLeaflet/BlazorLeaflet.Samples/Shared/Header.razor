@@ -1,0 +1,39 @@
+﻿@inject NavigationManager UriHelper
+
+<div class="top-row px-4"style="background-color: #363c40;"  >
+    <SfButton CssClass="e-btn e-outline e-success" ID="create" @onclick="create">ADD</SfButton>
+    <SfButton CssClass="e-btn e-outline e-danger" ID="delete" @onclick="delete">DELETE</SfButton>
+    <SfButton CssClass="e-btn e-outline e-info" ID="update" @onclick="update">UPDATE</SfButton>
+    <SfButton CssClass="e-btn e-outline e-primary" @onclick="create">LOGIN</SfButton>
+
+</div>
+<style>
+    #create {
+        margin-right: 2%;
+    }
+
+    #delete {
+        margin-right: 2%;
+    }
+
+    #update {
+        margin-right: 70%;
+    }
+</style>
+
+
+@code {
+    private void create()
+    {
+        UriHelper.NavigateTo("create");
+    }
+    private void delete()
+    {
+        UriHelper.NavigateTo("delete");
+    }
+    private void update()
+    {
+        UriHelper.NavigateTo("update");
+    }
+
+}

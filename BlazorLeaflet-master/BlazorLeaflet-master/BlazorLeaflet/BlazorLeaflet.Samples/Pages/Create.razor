@@ -1,0 +1,71 @@
+﻿@page "/create"
+@layout CrudLayout
+@using BlazorLeaflet.Samples.Data
+@inject HotelServices service
+    <div class="row m-5"style="margin-left:10%">
+        <div class="col-5 bg-light m-2 justify-content-start">
+            <div class="p-3 mb-3  text-white text-center" style="background-color: #629338;">Add New Hotel</div>
+            <EditForm Model="@NewHotel">
+                <div class="form-group">
+                    <label for="name">NAME</label>
+                    <input type="text" id="name" class="form-control" @bind-value="@NewHotel.name" />
+                </div>
+                <div class="form-group">
+                    <label for="price">PHONE</label>
+                    <input type="text" id="price" class="form-control" @bind-value="@NewHotel.phone" />
+                </div>
+                <div class="form-group">
+                    <label for="Description">CITY</label>
+                    <input type="text" id="Description" class="form-control" @bind-value="@NewHotel.city" />
+                </div>
+                <div class="form-group">
+                    <label for="Description">DISTRICT</label>
+                    <input type="text" id="Description" class="form-control" @bind-value="@NewHotel.district" />
+                </div>
+                <div class="form-group">
+                    <label for="Description">STREET</label>
+                    <input type="text" id="Description" class="form-control" @bind-value="@NewHotel.street" />
+                </div>
+                <div class="form-group">
+                    <label for="quantity">NO</label>
+                    <input type="text" id="quantity" class="form-control" @bind="@NewHotel.No" />
+                </div>
+                <div class="form-group">
+                    <label for="quantity">ACTIVITY AREA</label>
+                    <input type="text" id="quantity" class="form-control" @bind-value="@NewHotel.activity_area" />
+                </div>
+                <div class="form-group">
+                    <label for="quantity">IMAGE SOURCE</label>
+                    <input type="text" id="quantity" class="form-control" @bind-value="@NewHotel.image" />
+                </div>
+                <div class="form-group">
+                    <label for="Description">Longitude</label>
+                    <input type="text" id="Description" class="form-control" @bind="@NewHotel.Longitude" />
+                </div>
+                <div class="form-group">
+                    <label for="Description">Latitude</label>
+                    <input type="text" id="Description" class="form-control" @bind="@NewHotel.Latitude" />
+                </div>
+                <div class="text-center p-3 mb-3">
+                    <SfButton CssClass="e-btn e-outline e-success" @onclick="AddNewHotel">Add Hotel</SfButton>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+
+
+        @code {
+            List<Hotels> Hotel = new List<Hotels>();
+            public Hotels NewHotel { get; set; } = new Hotels();
+            private async Task RefreshHotel()
+            {
+                Hotel = await service.GetHotelAsync();
+            }
+            private async Task AddNewHotel()
+            {
+                await service.AddHotelAsync(NewHotel);
+                NewHotel = new Hotels();
+                await RefreshHotel();
+            }
+
+        }

@@ -1,7 +1,189 @@
 ﻿@page "/update"
 @layout CrudLayout
-<h3>Update</h3>
+@using BlazorLeaflet.Samples.Data
+@inject HotelServices service
+@using BlazorLeaflet.Models
+@using BlazorLeaflet.Models.Events
+@inject IJSRuntime jsRuntime
+<h1 style="color: #17a2b8; margin-bottom: 2%; padding-left: 35%; background-color: aliceblue; ">UPDATE HOTEL </h1>
+
+<div class="container" style="        width: 55%;
+        margin-left: 0%;
+        margin-top: 4%;
+">
+    <div class="row">
+        <table class="table table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>City</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @if (Hotels.Any())
+                {
+                    @foreach (var hotel in Hotels)
+                    {
+                        <tr @onclick="(() => SetHotelForUpdate(hotel))">
+
+                            <td>@hotel.name</td>
+                            <td>@hotel.phone</td>
+                            <td>@hotel.city</td>
+
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr><td colspan="6"><strong>No hotel available</strong></td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<div class="col-5 justify-content-end" style="margin-top: -15%; margin-left: 60%; max-width: 30%; ">
+    <div class="p-3 mb-1 bg-info text-white text-center">Update Hotel</div>
+    <EditForm Model="@UpdateHotel">
+        <div class="form-group">
+            <label for="name">NAME</label>
+            <input type="text" id="name" class="form-control" @bind-value="@UpdateHotel.name" />
+        </div>
+        <div class="form-group">
+            <label for="price">PHONE</label>
+            <input type="text" id="price" class="form-control" @bind-value="@UpdateHotel.phone" />
+        </div>
+        <div class="form-group">
+            <label for="Description">CITY</label>
+            <input type="text" id="Description" class="form-control" @bind-value="@UpdateHotel.city" />
+        </div>
+        <div class="form-group">
+            <label for="Description">DISTRICT</label>
+            <input type="text" id="Description" class="form-control" @bind-value="@UpdateHotel.district" />
+        </div>
+        <div class="form-group">
+            <label for="Description">STREET</label>
+            <input type="text" id="Description" class="form-control" @bind-value="@UpdateHotel.street" />
+        </div>
+        <div class="form-group">
+            <label for="quantity">NO</label>
+            <input type="text" id="quantity" class="form-control" @bind="@UpdateHotel.No" />
+        </div>
+        <div class="form-group">
+            <label for="quantity">ACTIVITY AREA</label>
+            <input type="text" id="quantity" class="form-control" @bind-value="@UpdateHotel.activity_area" />
+        </div>
+        <div class="form-group">
+            <label for="quantity">IMAGE SOURCE</label>
+            <input type="text" id="quantity" class="form-control" @bind-value="@UpdateHotel.image" />
+        </div>
+        <div class="form-group">
+            <label for="Description">Longitude</label>
+            <input type="text" id="Description" class="form-control" @bind="@UpdateHotel.Longitude" />
+        </div>
+        <div class="form-group">
+            <label for="Description">Latitude</label>
+            <input type="text" id="Description" class="form-control" @bind="@UpdateHotel.Latitude" />
+        </div>
+        <div class="text-center p-3 mb-3">
+            <SfButton CssClass="e-btn e-outline e-info" ID="update" @onclick="UpdateHotelData">UPDATE</SfButton>
+        </div>
+    </EditForm>
+
+</div>
+<div style="        height: 500px;
+        width: 500px;
+        margin-top: -45%;
+        margin-bottom: 20%;
+        padding-left: 2%;
+    ">
+    <p style="color: #17a2b8;">Otel Konumunu Harita Üzerinden Seçebilirsiniz...</p>
+    <LeafletMap Map="_map" />
+</div>
 
 @code {
+    List<Hotels> Hotels = new List<Hotels>();
+
+
+    private async Task RefreshHotel()
+    {
+        Hotels = await service.GetHotelAsync();
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshHotel();
+    }
+    Hotels UpdateHotel = new Hotels();
+    private void SetHotelForUpdate(Hotels hotel)
+    {
+        UpdateHotel = hotel;
+    }
+    private async Task UpdateHotelData()
+    {
+        await service.UpdateHotelAsync(UpdateHotel);
+        await RefreshHotel();
+    }
+    private Map _map;
+    private DrawHandler _drawHandler;
+    private LatLng _markerLatLng = new LatLng { Lat = 47.5574007f, Lng = 16.3918687f };
+
+    protected override void OnInitialized()
+    {
+        var marker = new Marker(_markerLatLng)
+        {
+            Draggable = true,
+            Title = "Marker 1",
+            Popup = new Popup { Content = string.Format("I am at {0:0.00}° lat, {1:0.00}° lng", _markerLatLng.Lat, _markerLatLng.Lng) },
+            Tooltip = new Tooltip { Content = "Click and drag to move me" }
+        };
+
+        _map = new Map(jsRuntime)
+        {
+            Center = _markerLatLng,
+            Zoom = 4.8f
+        };
+
+        _map.OnInitialized += () =>
+        {
+            _map.AddLayer(new TileLayer
+            {
+                UrlTemplate = "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                Attribution = "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors",
+            });
+
+            _map.AddLayer(marker);
+        };
+
+        _drawHandler = new DrawHandler(_map, jsRuntime);
+
+        marker.OnMove += OnDrag;
+        marker.OnMoveEnd += OnDragEnd;
+    }
+
+    private void OnDrag(Marker marker, DragEvent evt)
+    {
+        _markerLatLng = evt.LatLng;
+        StateHasChanged();
+        UpdateHotel.Latitude = _markerLatLng.Lat;
+        UpdateHotel.Longitude = _markerLatLng.Lng;
+    }
+
+    private async void OnDragEnd(Marker marker, Event e)
+    {
+        marker.Position = _markerLatLng;
+        marker.Popup.Content = string.Format("I am now at {0:0.00}° lat, {1:0.00}° lng", _markerLatLng.Lat, _markerLatLng.Lng);
+        await LeafletInterops.UpdatePopupContent(jsRuntime, _map.Id, marker);
+
+
+    }
 
 }
+<style>
+    #update {
+        width: 100px;
+        height: 35px;
+    }
+</style>

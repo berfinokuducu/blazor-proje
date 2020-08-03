@@ -7,10 +7,11 @@
 @using BlazorLeaflet.Models
 @inject CityService cityService
 @inject IJSRuntime jsRuntime
+@inject NavigationManager UriHelper
 
 
 
-<div  style="width: 300px; height: 300px;">
+<div style="width: 400px; height: 400px;">
     <LeafletMap Map="_map" />
 </div>
 
@@ -19,18 +20,18 @@
 </div>
 
 
-<div class="container">
-    <div class="row bg-light">
+<div  style="margin-right:2%;">
+    <div >
         <table class="table table-bordered">
             <thead class="thead-dark">
                 <tr>
-                    <th>name</th>
-                    <th>phone</th>
-                    <th>city</th>
-                    <th>district</th>
-                    <th>Longitude</th>
-                    <th>Latitude</th>
-
+                    <th style="width:10px;"></th>
+                    <th >NAME</th>
+                    <th>PHONE</th>
+                    <th>ACTIVITY AREA</th>
+                    <th>CITY</th>
+                    <th>DISTRICT</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -38,14 +39,19 @@
                 {
                     @foreach (var hotel in Hotels)
                     {
-                        <tr @onclick="(() => SetHotelForUpdate(hotel))">
+                        <tr>
+                            <td>
+                                <img style="height:110px; width:200px;" src="@hotel.image">
+                            </td>
+                            <td style="vertical-align:inherit; font-weight: bold;">@hotel.name</td>
+                            <td style="vertical-align:inherit; font-weight: bold;">@hotel.phone</td>
+                            <td style="vertical-align:inherit; font-weight: bold;">@hotel.activity_area</td>
+                            <td style="vertical-align:inherit; font-weight: bold;">@hotel.city</td>
+                            <td style="vertical-align:inherit;font-weight: bold;">@hotel.district</td>
+                            <td style="padding-top:3.5%">
+                                <SfButton CssClass="e-btn e-outline e-primary" @onclick="@Rezervasyon">RESERVATION</SfButton>
+                            </td>
 
-                            <td>@hotel.name</td>
-                            <td>@hotel.phone</td>
-                            <td>@hotel.city</td>
-                            <td>@hotel.district</td>
-                            <td>@hotel.Longitude</td>
-                            <td>@hotel.Latitude</td>
                         </tr>
                     }
                 }
@@ -71,13 +77,14 @@
             foreach (var hotel in Hotels)
             {
                 var LatLng = new LatLng(float.Parse(hotel.Latitude.ToString()), float.Parse(hotel.Longitude.ToString()));
-                if (hotel.No.ToString() is null)
+                if (hotel.ID.ToString() is null)
                 {
                     tooltip_ = "not exists...";
                 }
                 else
                 {
-                    tooltip_ = hotel.No.ToString();
+
+                    tooltip_ = hotel.name;
                 }
 
                 var marker = new Marker(LatLng)
@@ -87,6 +94,7 @@
                     Title = hotel.name,
                     Popup = new Popup { Content = string.Format("I am at {0:0.00}° lat, {1:0.00}° lng", LatLng.Lat, LatLng.Lng) },
                     Tooltip = new Tooltip { Content = tooltip_ }
+
 
                 };
 
@@ -104,11 +112,6 @@
     }
 
 
-    Hotels UpdateHotel = new Hotels();
-    private void SetHotelForUpdate(Hotels hotel)
-    {
-        UpdateHotel = hotel;
-    }
 
 
 
@@ -189,5 +192,9 @@
     private void PanToNY()
     {
         _map.PanTo(new PointF(40.713185f, -74.0072333f), animate: true, duration: 10f);
+    }
+    public void Rezervasyon()
+    {
+        UriHelper.NavigateTo("rezervasyon");
     }
 }

@@ -1,7 +1,70 @@
 ﻿@page "/delete"
 @layout CrudLayout
-<h3>Delete</h3>
+@using BlazorLeaflet.Samples.Data
+@inject HotelServices service
+    <h1 style=" color: #d64113; margin-bottom: 2%; padding-left: 35%; background-color:aliceblue;">DELETE HOTEL </h1>
+    <div class="container">
+        <div class="row">
+            <table class="table table-bordered">
+                <thead class="thead-dark">
+                    <tr class="liste">
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>City</th>
+                        <th>Delete Hotel</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Hotels.Any())
+                    {
+                        @foreach (var hotel in Hotels)
+                        {
+                            <tr>
+
+                                <td>@hotel.name</td>
+                                <td>@hotel.phone</td>
+                                <td>@hotel.city</td>
+                                <td><SfButton CssClass="e-btn e-outline e-danger" @onclick="(() => DeleteHotel(hotel))" ID="bttndelete">DELETE</SfButton></td>
+                            </tr>
+                            
+                        }
+                    }
+                    else
+                    {
+                        <tr><td colspan="6"><strong>No hotel available</strong></td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        
+        
+
+    </div>
 
 @code {
+        List<Hotels> Hotels = new List<Hotels>();
 
+        private async Task DeleteHotel(Hotels hotel)
+        {
+            await service.DeleteHotelAsync(hotel);
+            await RefreshHotel();
+        }
+        private async Task RefreshHotel()
+        {
+            Hotels = await service.GetHotelAsync();
+        }
+     protected override async Task OnInitializedAsync()
+    {
+        await RefreshHotel();
+    }
 }
+<style>
+    #bttndelete
+    {
+        margin-left:13%;
+        width:70%;
+        
+    }
+</style>
+

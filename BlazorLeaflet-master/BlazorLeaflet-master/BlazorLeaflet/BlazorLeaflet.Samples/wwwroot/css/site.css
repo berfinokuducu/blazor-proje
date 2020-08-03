@@ -157,3 +157,6 @@ app {
     margin-left: -37px;
     margin-top: -37px;
 }
+tr:hover{
+    background-color:lightgray;
+}

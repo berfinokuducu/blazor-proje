@@ -1,13 +1,107 @@
 ﻿@inject NavigationManager UriHelper
+@using Syncfusion.Blazor.Popups
+@using Syncfusion.Blazor.Notifications
 
-<div class="top-row px-4"style="background-color: #363c40;"  >
-    <SfButton CssClass="e-btn e-outline e-success" ID="create" @onclick="create">ADD</SfButton>
-    <SfButton CssClass="e-btn e-outline e-danger" ID="delete" @onclick="delete">DELETE</SfButton>
-    <SfButton CssClass="e-btn e-outline e-info" ID="update" @onclick="update">UPDATE</SfButton>
-    <SfButton CssClass="e-btn e-outline e-primary" @onclick="create">LOGIN</SfButton>
+<div class="top-row px-4" style="background-color: #363c40;">
+    <SfButton CssClass="e-btn e-outline e-success" ID="create" @onclick="@OnBtnClickForCreate">ADD</SfButton>
+    <SfButton CssClass="e-btn e-outline e-danger" ID="delete" @onclick="@OnBtnClickForDelete">DELETE</SfButton>
+    <SfButton CssClass="e-btn e-outline e-info" ID="update" @onclick="@OnBtnClickForUpdate">UPDATE</SfButton>
+    <SfButton CssClass="e-btn e-outline e-primary" @onclick="@Login">LOGIN</SfButton>
 
 </div>
+<div class="col-lg-12 control-section" id="target">
+
+    <SfDialog Target="#target" Height="400px" Width="500px" ShowCloseIcon="true" @bind-Visible="Visibility">
+        <DialogTemplates >
+            <Header>Authorized Login</Header>
+            <Content>
+                <div style="margin-left:15%;width:150%;">
+                    <div class="col-5  m-2 justify-content-start">
+                        <div class="p-3 mb-3  text-white text-center" style="background-color: darkslateblue">Login</div>
+
+                        <div class="form-group">
+                            <label>USERNAME</label>
+                            <input type="text" class="form-control" @bind-value="@input_username" />
+                        </div>
+                        <div class="form-group">
+                            <label>PASSWORD</label>
+                            <input type="text" class="form-control" @bind-value="@input_password" />
+                        </div>
+
+                    </div>
+                </div>
+
+            </Content>
+        </DialogTemplates>
+        <DialogEvents OnOpen="@DialogOpen" Closed="@DialogClose"></DialogEvents>
+        <DialogButtons>
+            <SfButton CssClass="e-btn e-outline e-primary" ID="Control" @onclick="@Control">LOGIN</SfButton>
+        </DialogButtons>
+    </SfDialog>
+</div>
+<div class="col-lg-4 control-section">
+    <SfToast @ref="ToastObj" ID="toast_type">
+        <ToastPosition X="@ToastPosition"></ToastPosition>
+    </SfToast>
+</div>
 <style>
+    @@font-face {
+        font-family: 'Toast_icons';
+        src: url(data:application/x-font-ttf;charset=utf-8;base64,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) format('truetype');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    #toast_types button {
+        margin: 5px;
+        min-width: 160px;
+        max-width: 160px;
+    }
+
+    .toast-icons {
+        font-family: 'Toast_icons' !important;
+        speak: none;
+        font-size: 55px;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    #toast_type .e-toast-icon.e-icons {
+        height: auto;
+        font-size: 30px;
+    }
+
+    .toast-icons.e-success::before {
+        content: "\e701";
+    }
+
+    .toast-icons.e-error::before {
+        content: "\e700";
+    }
+
+    .toast-icons.e-info::before {
+        content: "\e704";
+    }
+
+    .toast-icons.e-warning::before {
+        content: "\e703";
+    }
+
+    #toast_types {
+        text-align: center;
+    }
+    #Control {
+        width: 22%;
+        margin-left: 37%;
+        margin-top: 2%;
+        height: 12%;
+    }
+
     #create {
         margin-right: 2%;
     }
@@ -19,21 +113,100 @@
     #update {
         margin-right: 70%;
     }
+
+    a, a:hover, .highcontrast #dialog a, .highcontrast #dialog a:hover {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .fabric #target .e-dialog {
+        height: 306px;
+    }
+
+    .material #target .e-dialog {
+        height: 270px;
+    }
+
+    .bootstrap4 #target .e-dialog {
+        height: 305px;
+    }
+
+    #target .e-dialog {
+        height: 270px;
+    }
+
+    #target {
+        height: 450px;
+        
+    }
 </style>
 
 
 @code {
-    private void create()
+    private string username { get; set; } = "admin";
+    private string password { get; set; } = "1234";
+    private string input_username { get; set; } = null;
+    private string input_password { get; set; } = null;
+    private bool create_button { get; set; } = false;
+    private bool update_button { get; set; } = false;
+    private bool delete_button { get; set; } = false;
+    private bool Visibility { get; set; } = false;
+    private bool ShowButton { get; set; } = true;
+    private void Control()
     {
-        UriHelper.NavigateTo("create");
-    }
-    private void delete()
-    {
-        UriHelper.NavigateTo("delete");
-    }
-    private void update()
-    {
-        UriHelper.NavigateTo("update");
-    }
 
+        @if (username == input_username & password == input_password)
+        {
+            @if (create_button)
+            {
+                UriHelper.NavigateTo("create");
+            }
+            @if (delete_button)
+            {
+                UriHelper.NavigateTo("delete");
+            }
+            @if (update_button)
+            {
+                UriHelper.NavigateTo("update");
+
+            }
+
+
+
+        }
+        else
+        {
+            this.ToastObj.Show(Toast);
+        }
+    }
+    private void OnBtnClickForCreate()
+    {
+        this.create_button = true;
+        this.Visibility = true;
+    }
+    private void OnBtnClickForUpdate()
+    {
+        this.update_button = true;
+        this.Visibility = true;
+    }
+    private void OnBtnClickForDelete()
+    {
+        this.delete_button = true;
+        this.Visibility = true;
+    }
+    private void DialogOpen(Object args)
+    {
+        this.ShowButton = false;
+    }
+    private void DialogClose(Object args)
+    {
+        this.ShowButton = true;
+    }
+    private void Login()
+    {
+        UriHelper.NavigateTo("fetchdata");
+    }
+    SfToast ToastObj;
+    private string ToastPosition = "Right";
+    private ToastModel Toast = new ToastModel { Title = "Error!", Content = "Kullanıcı Adı veya Parola Hatalı...", CssClass = "e-toast-danger", Icon = "e-error toast-icons" };
 }

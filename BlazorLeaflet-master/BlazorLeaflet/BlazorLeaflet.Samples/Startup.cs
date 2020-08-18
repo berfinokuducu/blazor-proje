@@ -35,7 +35,7 @@ namespace BlazorLeaflet.Samples
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("Mjg5NTc5QDMxMzgyZTMyMmUzMEtVZVdHTEhoeG00Yk52NUU2eHFCKzVYZDJ4YURKejFCcWc5T1luaW1TdE09");
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("MzA0NTg0QDMxMzgyZTMyMmUzMFlYR1pZWHhUZm05czBUeWN3Vm5DTmgrZDlsS3gvdEJqamU3UHJsQUJiWE09");
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
